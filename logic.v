@@ -19,15 +19,15 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module logic1(
-input [71:0]myin,
-output reg [71:0]myout
+input [0:71]myin,
+output reg [0:71]myout
 );
 parameter width = 3;
 parameter height = 3;
 parameter kernel = 3;
 parameter percent = 110;
 parameter size=(kernel-1)/2;
-reg [7:0]tmp,tmp1;
+reg [0:7]tmp,tmp1;
 integer i , j , k , h , s, l, temp;
 //parameter sw = width + kernel - 1; 
 //parameter sh = height + kernel - 1;
@@ -64,50 +64,50 @@ end
 always @(*)
 begin
 	tmp = 8'b00000000;
-	for(i=(height*width*8)-1;i>=0;i=i-8)
+	for(i=0;i<height*width*8;i=i+8)
 	begin
 	   for(l = 0; l < 8; l = l + 1)
 		begin
-			tmp1[7-l] = myin[i-l];
+			tmp1[l] = myin[i+l];
 		end
 		temp=0;
 		k = i - width*8;
-		repeat(3)
+		repeat(kernel)
 			begin
 		   if(k < 0 || k > height*width*8)
 				temp = temp + 0;
 			else
 				begin
 					h = -size*8;
-					repeat(110)
+					repeat(kernel)
 					begin
-						if(k + h < 0 || k + h > height*width*8)
+						if(k + h < ((k + h)/width*8)*width*8 || k + h > (((k + h)/width*8)*width*8)+width*8)
 							temp = temp + 0;
 						else
 							begin
 								for(j = 0; j < 8; j = j + 1)
 								begin
-									tmp[7-j] = myin[i-j];
+									tmp[j] = myin[k+h+j];
 								end
 								temp = temp + tmp;
 							end
-					h = h + 1;
+					h = h + 8;
 					end
 				end
 			k = k + width*8;
 			end
-			if (temp > (tmp1*9*(percent / 100)))
+			if (temp > (tmp1*kernel*kernel))
 			begin
 				for(s = 0; s < 8; s = s + 1)
 								begin
-									myout[i-s] = 0;
+									myout[i+s] = 0;
 								end
 			end
 			else
 			begin
 				for(s = 0; s < 8; s = s + 1)
 								begin
-									myout[i-s] = 1;
+									myout[i+s] = 1;
 								end
 			end
 		end
