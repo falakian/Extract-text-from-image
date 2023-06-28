@@ -1,87 +1,66 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date:    21:24:59 06/19/2023 
-// Design Name: 
-// Module Name:    logic 
-// Project Name: 
-// Target Devices: 
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
-module logic(
-input in[height:0][width:0],
-output reg out[height:0][width:0]
-    );
-parameter width = 1920;
-parameter height = 1080;
-parameter kernel = 51;
-parameter percent = 110;
-parameter size=(kernel-1)/2;
-integer i , j , k , h ,temp;
-parameter sw = width + kernel - 1; 
-parameter sh = height + kernel - 1;
-reg img [sh:0][sw:0];
-always
-begin
-	for(i=0;i<=size;i=i+1)
-	begin
-		for(j=0;j<=sw ;j=j+1)
-		begin
-			img[i][j] = 0;
-			img[height+size+i][j] = 0;
-		end
-	end
-	
-	for(j=0;j<=size;j=j+1)
-	begin
-		for(i=0;i<=sh ;i=i+1)
-		begin
-			img[i][j] = 0;
-			img[i][width+size+j] = 0;
-		end
-	end
-	
-	for(i=0;i<=height;i=i+1)
-	begin
-		for(j=0;j<=width;j=j+1)
-		begin
-			img[i+size][j+size] = in[i][j];
-		end
-	end
-end
 
-always
+module logic1#(
+parameter width = 10,
+parameter height = 10,
+parameter kernel = 3,
+parameter percent = 110,
+parameter size=(kernel-1)/2)
+(
+input [0:((width*height*8)-1)]myin,
+output reg [0:((width*height*8)-1)]myout
+);
+
+reg [7:0] tmp ;
+integer i , j , k , h , w, x , v , b , temp ;
+
+always@(*)
 begin
-	for(i=size;i<=height+size;i=i+1)
+	for(h = 0 ; h < (8 * width * height) ; h = h + ((8 * width)))
 	begin
-		for(j=size;j<=width+size;j=j+1)
+	   for(w = 0; w < (8 * width); w = w + 8)
 		begin
-			temp=0;
-			for(h=i-size;h<=i+size;h=h+1)
+			i = h + w - (width * size * 8);
+			j = h + w - (size * 8);
+			temp = 0;
+			repeat(kernel)
 			begin
-				for(k=j-size;k<=j+size;k=k+1)
+				repeat(kernel)
 				begin
-					temp=temp+img[h][k];
+					if(((i + j ) < 0) || ((i + j ) > ((8 * width * height)- 1)))
+						begin
+							temp = temp + 0; 
+						end
+					else
+						begin
+							tmp = 8'b00000000;
+							for(k =0 ; k < 8 ; k = k + 1)
+							begin
+								tmp[k] = myin[i+j+k];
+							end
+						end
+					temp = temp + tmp;
+					j = j + 8;
 				end
-			end
-			temp=temp/2601;
-			if (temp > (img[i][j] * (percent / 100)))
+				i = i + (width * 8);
+			end	
+				tmp = 8'b00000000;
+			for(x = 0 ; x < 8 ; x = x + 1)
 			begin
-				out[i][j] = 0;
+				tmp[x] = myin[h+w+x];
+			end
+			if( tmp*(kernel * kernel) > temp*( percent / 100 ))
+			begin
+				for(v = 0 ; v < 8 ; v = v + 1)
+				begin
+					myout[h + w + v ] = 0;
+				end
 			end
 			else
 			begin
-				out[i][j] = 1;
+				for(b = 0 ; b < 8 ; b = b + 1)
+				begin
+					myout[h + w + b ] = 1;
+				end
 			end
 		end
 	end
