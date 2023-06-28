@@ -1,69 +1,117 @@
-
-module logic1#(
-parameter width = 10,
-parameter height = 10,
-parameter kernel = 3,
-parameter percent = 110,
-parameter size=(kernel-1)/2)
-(
-input [0:((width*height*8)-1)]myin,
-output reg [0:((width*height*8)-1)]myout
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    21:24:59 06/19/2023 
+// Design Name: 
+// Module Name:    logic 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module logic1(
+input [71:0]myin,
+output reg [71:0]myout
 );
-
-reg [7:0] tmp ;
-integer i , j , k , h , w, x , v , b , temp ;
-
-always@(*)
+parameter width = 3;
+parameter height = 3;
+parameter kernel = 3;
+parameter percent = 110;
+parameter size=(kernel-1)/2;
+reg [7:0]tmp,tmp1;
+integer i , j , k , h , s, l, temp;
+//parameter sw = width + kernel - 1; 
+//parameter sh = height + kernel - 1;
+//reg img [sh:0][sw:0];
+/*always
 begin
-	for(h = 0 ; h < (8 * width * height) ; h = h + ((8 * width)))
+	for(i=0;i<=size;i=i+1)
 	begin
-	   for(w = 0; w < (8 * width); w = w + 8)
+		for(j=0;j<=sw ;j=j+1)
 		begin
-			i = h + w - (width * size * 8);
-			j = h + w - (size * 8);
-			temp = 0;
-			repeat(kernel)
-			begin
-				repeat(kernel)
-				begin
-					if(((i + j ) < 0) || ((i + j ) > ((8 * width * height)- 1)))
-						begin
-							temp = temp + 0; 
-						end
-					else
-						begin
-							tmp = 8'b00000000;
-							for(k =0 ; k < 8 ; k = k + 1)
-							begin
-								tmp[k] = myin[i+j+k];
-							end
-						end
-					temp = temp + tmp;
-					j = j + 8;
-				end
-				i = i + (width * 8);
-			end	
-				tmp = 8'b00000000;
-			for(x = 0 ; x < 8 ; x = x + 1)
-			begin
-				tmp[x] = myin[h+w+x];
-			end
-			if( tmp*(kernel * kernel) > temp*( percent / 100 ))
-			begin
-				for(v = 0 ; v < 8 ; v = v + 1)
-				begin
-					myout[h + w + v ] = 0;
-				end
-			end
-			else
-			begin
-				for(b = 0 ; b < 8 ; b = b + 1)
-				begin
-					myout[h + w + b ] = 1;
-				end
-			end
+			img[i][j] = 0;
+			img[height+size+i][j] = 0;
+		end
+	end
+	
+	for(j=0;j<=size;j=j+1)
+	begin
+		for(i=0;i<=sh ;i=i+1)
+		begin
+			img[i][j] = 0;
+			img[i][width+size+j] = 0;
+		end
+	end
+	
+	for(i=0;i<=height;i=i+1)
+	begin
+		for(j=0;j<=width;j=j+1)
+		begin
+			img[i+size][j+size] = in[i][j];
 		end
 	end
 end
+*/
+always @(*)
+begin
+	tmp = 8'b00000000;
+	for(i=(height*width*8)-1;i>=0;i=i-8)
+	begin
+	   for(l = 0; l < 8; l = l + 1)
+		begin
+			tmp1[7-l] = myin[i-l];
+		end
+		temp=0;
+		k = i - width*8;
+		repeat(3)
+			begin
+		   if(k < 0 || k > height*width*8)
+				temp = temp + 0;
+			else
+				begin
+					h = -size*8;
+					repeat(110)
+					begin
+						if(k + h < 0 || k + h > height*width*8)
+							temp = temp + 0;
+						else
+							begin
+								for(j = 0; j < 8; j = j + 1)
+								begin
+									tmp[7-j] = myin[i-j];
+								end
+								temp = temp + tmp;
+							end
+					h = h + 1;
+					end
+				end
+			k = k + width*8;
+			end
+			if (temp > (tmp1*9*(percent / 100)))
+			begin
+				for(s = 0; s < 8; s = s + 1)
+								begin
+									myout[i-s] = 0;
+								end
+			end
+			else
+			begin
+				for(s = 0; s < 8; s = s + 1)
+								begin
+									myout[i-s] = 1;
+								end
+			end
+		end
+end
+
 
 endmodule
