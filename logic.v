@@ -71,7 +71,7 @@ begin
 			tmp1[l] = myin[i+l];
 		end
 		temp=0;
-		k = i - width*8;
+		k = i - width*8*size;
 		repeat(kernel)
 			begin
 		   if(k < 0 || k > height*width*8)
