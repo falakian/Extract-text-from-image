@@ -1,4 +1,4 @@
-module writing_output_to_binary_file(input reg result[height*width*8:0);
+module writing_output_to_binary_file(input reg result[height*width*8:0]);
 parameter width = 1920;
 parameter height = 1080;
 integer i ;
@@ -7,7 +7,14 @@ initial
     $fopen("binary-output.bin");
     for (i=0; i<height*width*8; i= i+1) 
         begin
-            $fwrite("binary-output.bin", "%h ",result[i][j]);
+            if(i % (height*8) != 0)
+                begin
+                    $fwrite("binary-output.bin", "%h ",result[i]);
+                end
+            else
+                begin
+                    $fwrite("binary-output.bin","\n");                
+                end
         end
     $fclose();
     end
