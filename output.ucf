@@ -1,0 +1,29 @@
+
+
+NET "Blue[7]" LOC = AC4;
+NET "Blue[6]" LOC = AC5;
+NET "Blue[5]" LOC = AB6;
+NET "Blue[4]" LOC = AB7;
+NET "Blue[3]" LOC = AA5;
+NET "Blue[2]" LOC = AB5;
+NET "Blue[1]" LOC = AC7;
+NET "Blue[0]" LOC = AD7;
+NET "Green[7]" LOC = Y8;
+NET "Green[6]" LOC = Y9;
+NET "Green[5]" LOC = AD4;
+NET "Green[4]" LOC = AD5;
+NET "Green[3]" LOC = AA6;
+NET "Green[2]" LOC = Y7;
+NET "Green[1]" LOC = AD6;
+NET "Green[0]" LOC = AE6;
+NET "Red[7]" LOC = AG5;
+NET "Red[6]" LOC = AF5;
+NET "Red[5]" LOC = W7;
+NET "Red[4]" LOC = V7;
+NET "Red[3]" LOC = AH5;
+NET "Red[2]" LOC = AG6;
+NET "Red[1]" LOC = Y11;
+NET "Red[0]" LOC = W11;
+NET "clk" LOC = AH18;
+NET "Vsynq" LOC = Y6;
+NET "Hsynq" LOC = AE7;

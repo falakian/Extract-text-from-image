@@ -1,10 +1,13 @@
 module vga_controller(
-  input reg[7:0] img[16588800:0] ; // 16588800 = 1920*1080*8
   input wire clk,
   input wire reset,
-  output wire [3:0] red,
-  output wire [3:0] green,
-  output wire [3:0] blue,
+  input [7:0] Red_in,
+  input [7:0] Green_in,
+  input [7:0] Blue_in,
+  output reg clk_5MHZ , 
+  output wire [7:0] red,
+  output wire [7:0] green,
+  output wire [7:0] blue,
   output wire hsync,
   output wire vsync
 );
@@ -21,11 +24,22 @@ module vga_controller(
 
   reg [15:0] h_cnt;
   reg [15:0] v_cnt;
-
+  reg [5:0]conuter;
   reg hsync_reg;
   reg vsync_reg;
 
-  always @(posedge clk or posedge reset) begin
+//clock divider => for 1920*1080 most 100MHZ convert to 5MHZ
+always @(posedge clk)
+begin
+	if (counter == 20)begin 
+		clk_5MHZ <= ~clk_5MHZ;
+		counter <= 0;
+		end
+	else
+      counter <= counter + 1;
+end
+
+  always @(posedge clk_5MHZ or posedge reset) begin
     if (reset) begin
       h_cnt <= 0;
       v_cnt <= 0;
@@ -51,13 +65,13 @@ module vga_controller(
   // RGB color generation
   always @(posedge clk) begin
     if (v_cnt >= V_FRONT_PORCH && v_cnt < V_DISPLAY + V_FRONT_PORCH && h_cnt >= H_FRONT_PORCH && h_cnt < H_DISPLAY + H_FRONT_PORCH) begin
-      red <= 4'b0001;   // Set red color to maximum
-      green <= 4'b0011; // Set green color to minimum
-      blue <= 4'b0001;  // Set blue color to minimum
+      red <= Red_in;   
+      green <= Green_in; 
+      blue <= Blue_in;  
     end else begin
-      red <= 4'b0000;   // Set red color to minimum
-      green <= 4'b0000; // Set green color to minimum
-      blue <= 4'b0000;  // Set blue color to minimum
+      red <= 8'h0;   
+      green <= 8'h0; 
+      blue <= 8'h0;  
     end
   end
 
