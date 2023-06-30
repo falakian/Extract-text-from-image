@@ -82,11 +82,9 @@ def Convert (ImageName):
 			# '0b' part and left filling zeros until the string represents 8 bits
 			# then slice off the bits of interest with [5:] for red and green
 			# or [6:] for blue
-			Rb = bin(R)[2:].zfill(8)[:3]
-			Gb = bin(G)[2:].zfill(8)[:3]
-			Bb = bin(B)[2:].zfill(8)[:2]
+			Rb = bin(R)[2:].zfill(8)
 			
-			Outbyte = Rb+Gb+Bb
+			Outbyte = Rb
 			# Check for Value Error, happened when the case of the pixel being 
 			# zero was not handled properly	
 			try:
@@ -116,3 +114,4 @@ def Convert (ImageName):
 
 
 
+Convert('output-onlinejpgtools.jpg')
