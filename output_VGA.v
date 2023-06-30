@@ -22,8 +22,8 @@ module vga_controller(
   parameter V_SYNC_PULSE = 5;     // Vertical sync pulse
   parameter V_BACK_PORCH = 36;    // Vertical back porch
 
-  reg [15:0] h_cnt;
-  reg [15:0] v_cnt;
+  reg [10:0] h_cnt;
+  reg [10:0] v_cnt;
   reg [5:0]conuter;
   reg hsync_reg;
   reg vsync_reg;
