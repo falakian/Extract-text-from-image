@@ -25,8 +25,8 @@
 *     (c) Copyright 1995-2023 Xilinx, Inc.                                     *
 *     All rights reserved.                                                     *
 *******************************************************************************/
-// You must compile the wrapper file memoryconfiguration.v when simulating
-// the core, memoryconfiguration. When compiling the wrapper file, be sure to
+// You must compile the wrapper file memoryConfig.v when simulating
+// the core, memoryConfig. When compiling the wrapper file, be sure to
 // reference the XilinxCoreLib Verilog simulation library. For detailed
 // instructions, please refer to the "CORE Generator Help".
 
@@ -36,9 +36,8 @@
 
 `timescale 1ns/1ps
 
-module memoryconfiguration(
+module memoryConfig(
   clka,
-  rsta,
   wea,
   addra,
   dina,
@@ -46,17 +45,16 @@ module memoryconfiguration(
 );
 
 input clka;
-input rsta;
 input [0 : 0] wea;
-input [10 : 0] addra;
-input [1079 : 0] dina;
-output [1079 : 0] douta;
+input [14 : 0] addra;
+input [7 : 0] dina;
+output [7 : 0] douta;
 
 // synthesis translate_off
 
   BLK_MEM_GEN_V7_3 #(
-    .C_ADDRA_WIDTH(11),
-    .C_ADDRB_WIDTH(11),
+    .C_ADDRA_WIDTH(15),
+    .C_ADDRB_WIDTH(15),
     .C_ALGORITHM(1),
     .C_AXI_ID_WIDTH(4),
     .C_AXI_SLAVE_TYPE(0),
@@ -78,12 +76,12 @@ output [1079 : 0] douta;
     .C_HAS_MUX_OUTPUT_REGS_B(0),
     .C_HAS_REGCEA(0),
     .C_HAS_REGCEB(0),
-    .C_HAS_RSTA(1),
+    .C_HAS_RSTA(0),
     .C_HAS_RSTB(0),
     .C_HAS_SOFTECC_INPUT_REGS_A(0),
     .C_HAS_SOFTECC_OUTPUT_REGS_B(0),
     .C_INIT_FILE("BlankString"),
-    .C_INIT_FILE_NAME("memoryconfiguration.mif"),
+    .C_INIT_FILE_NAME("memoryConfig.mif"),
     .C_INITA_VAL("0"),
     .C_INITB_VAL("0"),
     .C_INTERFACE_TYPE(0),
@@ -91,10 +89,10 @@ output [1079 : 0] douta;
     .C_MEM_TYPE(0),
     .C_MUX_PIPELINE_STAGES(0),
     .C_PRIM_TYPE(1),
-    .C_READ_DEPTH_A(1920),
-    .C_READ_DEPTH_B(1920),
-    .C_READ_WIDTH_A(1080),
-    .C_READ_WIDTH_B(1080),
+    .C_READ_DEPTH_A(24345),
+    .C_READ_DEPTH_B(24345),
+    .C_READ_WIDTH_A(8),
+    .C_READ_WIDTH_B(8),
     .C_RST_PRIORITY_A("CE"),
     .C_RST_PRIORITY_B("CE"),
     .C_RST_TYPE("SYNC"),
@@ -109,21 +107,21 @@ output [1079 : 0] douta;
     .C_USE_SOFTECC(0),
     .C_WEA_WIDTH(1),
     .C_WEB_WIDTH(1),
-    .C_WRITE_DEPTH_A(1920),
-    .C_WRITE_DEPTH_B(1920),
+    .C_WRITE_DEPTH_A(24345),
+    .C_WRITE_DEPTH_B(24345),
     .C_WRITE_MODE_A("WRITE_FIRST"),
     .C_WRITE_MODE_B("WRITE_FIRST"),
-    .C_WRITE_WIDTH_A(1080),
-    .C_WRITE_WIDTH_B(1080),
+    .C_WRITE_WIDTH_A(8),
+    .C_WRITE_WIDTH_B(8),
     .C_XDEVICEFAMILY("virtex5")
   )
   inst (
     .CLKA(clka),
-    .RSTA(rsta),
     .WEA(wea),
     .ADDRA(addra),
     .DINA(dina),
     .DOUTA(douta),
+    .RSTA(),
     .ENA(),
     .REGCEA(),
     .CLKB(),

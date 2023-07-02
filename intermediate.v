@@ -18,23 +18,24 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module intermediate(  clk , totalData
+module intermediate(  clk , totalData ,inputEnable
     );
-parameter data_width = 8;
-parameter imageWidth = 131 ;
-parameter imageheight = 185 ;
+`include "parameter.h"
 input clk ;
 output reg [8*imageheight*imageWidth-1 : 0] totalData ;
+output reg inputEnable  ;
 wire[data_width-1 : 0] tempOutput ;
 readMemory memory(clk , tempOutput);
 integer counter = imageheight*imageWidth ;
 always@(posedge clk)
 begin
-	if(counter>0)
+	if(counter>0) 
 	begin
-		totalData[8*counter-1:8*counter-8] = tempOutput ;
+		{totalData[8*counter-1] , totalData[8*counter-2] , totalData[8*counter-3] , totalData[8*counter-4] , totalData[8*counter-5] ,totalData[8*counter-6] ,totalData[8*counter-7] ,totalData[8*counter-8]} = tempOutput ;
 		counter = counter-1  ;
 	end
+	if(counter==0)
+		inputEnable = 1 ;
 		
 end
 

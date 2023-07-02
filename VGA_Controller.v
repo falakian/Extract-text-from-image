@@ -1,30 +1,26 @@
 module vga_controller(
   input wire clk,
   input wire reset,
-  input [7:0] Red_in,
-  input [7:0] Green_in,
-  input [7:0] Blue_in,
+  input [7:0] Data_in,
   output reg clk_5MHZ , 
-  output wire [7:0] red,
-  output wire [7:0] green,
-  output wire [7:0] blue,
+  output reg [7:0] red,
+  output reg [7:0] green,
+  output reg [7:0] blue,
   output wire hsync,
   output wire vsync
 );
-
+`include "parameter.h"
   // VGA timings
-  parameter H_DISPLAY = 1920;      // Horizontal display resolution
   parameter H_FRONT_PORCH = 88;   // Horizontal front porch
   parameter H_SYNC_PULSE = 44;    // Horizontal sync pulse
   parameter H_BACK_PORCH = 148;    // Horizontal back porch
-  parameter V_DISPLAY = 1080;      // Vertical display resolution
   parameter V_FRONT_PORCH = 4;   // Vertical front porch
   parameter V_SYNC_PULSE = 5;     // Vertical sync pulse
   parameter V_BACK_PORCH = 36;    // Vertical back porch
 
-  reg [10:0] h_cnt;
-  reg [10:0] v_cnt;
-  reg [5:0]conuter;
+  reg [15:0] h_cnt;
+  reg [15:0] v_cnt;
+  reg [5:0]counter;
   reg hsync_reg;
   reg vsync_reg;
 
@@ -45,9 +41,9 @@ end
       v_cnt <= 0;
       hsync_reg <= 0;
       vsync_reg <= 0;
-    end else if (h_cnt == H_DISPLAY + H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH - 1) begin
+    end else if (h_cnt == imageheight + H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH - 1) begin
       h_cnt <= 0;
-      if (v_cnt == V_DISPLAY + V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH - 1) begin
+      if (v_cnt == imageWidth + V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH - 1) begin
         v_cnt <= 0;
         vsync_reg <= ~vsync_reg;
       end else begin
@@ -64,10 +60,10 @@ end
 
   // RGB color generation
   always @(posedge clk) begin
-    if (v_cnt >= V_FRONT_PORCH && v_cnt < V_DISPLAY + V_FRONT_PORCH && h_cnt >= H_FRONT_PORCH && h_cnt < H_DISPLAY + H_FRONT_PORCH) begin
-      red <= Red_in;   
-      green <= Green_in; 
-      blue <= Blue_in;  
+    if (v_cnt >= V_FRONT_PORCH && v_cnt < imageWidth + V_FRONT_PORCH && h_cnt >= H_FRONT_PORCH && h_cnt < imageheight + H_FRONT_PORCH) begin
+      red <= Data_in;   
+      green <= Data_in; 
+      blue <= Data_in;  
     end else begin
       red <= 8'h0;   
       green <= 8'h0; 

@@ -3,7 +3,7 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    18:53:15 06/23/2023 
+// Create Date:    12:59:18 06/28/2023 
 // Design Name: 
 // Module Name:    readMemory 
 // Project Name: 
@@ -18,28 +18,30 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module readMemory(clk,douta);
-parameter addr_width =4;
-parameter data_width = 16;
-input clk;
-reg [addr_width-1:0] addra = 0 ;
-output  [data_width-1:0] douta;
-reg [addr_width-1:0] addr_next;
-memoryconfiguration memory (
-  .clka(clk), // input clka
-  .addra(addra), // input [10 : 0] addra
-  .douta(douta) // output [1079 : 0] douta
+module readMemory( clka , douta);
+`include "parameter.h"
+
+input clka ;
+output [data_width-1 : 0] douta ;
+
+reg [addr_width -1 : 0] addra  = startAdderss;
+reg [addr_width -1 : 0] next_addr = startAdderss;
+memoryConfig memory (
+  .clka(clka), // input clka
+  .addra(addra), // input [14 : 0] addra
+  .douta(douta) // output [7 : 0] douta
 );
- always @(posedge clk)       //whenever there is a sequential block we can use non blocking assignment
-         addra <= addr_next;
+
+
+always @(posedge clka)
+         addra <= next_addr;
 		  
-always @(*)
+always @(posedge clka)
     begin
         if(addra == {(addr_width-1){1}})
-           addr_next =  addra;
+           next_addr =  addra;
         else
-            addr_next =  addra+1;
+            next_addr =  addra+1;
     end
-	 
-endmodule
 
+endmodule

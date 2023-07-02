@@ -18,17 +18,17 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module topModule(
+module topModule( clk
     );
 `include "parameter.h"
-reg clk ; //system clk??
-reg [8*imageheight*imageWidth-1 : 0] totalData ;
-reg [8*imageheight*imageWidth-1 : 0] processedData ;
-reg inputEnable = 0 ;
+input clk ; //system clk??
+wire [8*imageheight*imageWidth-1 : 0] totalData ;
+wire [8*imageheight*imageWidth-1 : 0] processedData ;
+wire inputEnable ;
 reg reset = 0 ; //push button
 reg endSign = 0 ;//LED
 reg [data_width-1 : 0] Data_in ;
-reg clk_5MHZ ; //use clock divider
+wire clk_5MHZ ; //use clock divider
 wire [7:0] red,green,blue ;
 wire hsync,vsync ;
 intermediate inter_ins(clk , totalData ,inputEnable);
@@ -44,7 +44,7 @@ begin
 		if(counter>0)
 		begin
 			counter = counter - 1 ;
-			Data_in = processedData[8*counter-1:8*counter-8] ;//clk should be 5mhz
+			Data_in = {processedData[8*counter-1] ,processedData[8*counter-2] ,processedData[8*counter-3] ,processedData[8*counter-4] ,processedData[8*counter-5] , processedData[8*counter-6] , processedData[8*counter-7] , processedData[8*counter-8]} ;//clk should be 5mhz
 		end
 		else
 			endSign = 1 ;
